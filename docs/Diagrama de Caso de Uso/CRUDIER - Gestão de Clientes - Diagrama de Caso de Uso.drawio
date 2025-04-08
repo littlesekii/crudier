@@ -1,0 +1,51 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0" version="26.2.6">
+  <diagram name="Page-1" id="5UBKW4op1lCRrEo47qOw">
+    <mxGraphModel dx="613" dy="363" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="FbjJ07lTMPpQPkqSLfpy-14" value="CRUDIER&lt;span style=&quot;font-size: 13px; text-align: left;&quot;&gt;&lt;font style=&quot;color: rgb(0, 0, 0);&quot;&gt;™ - Gestão de Clientes&lt;/font&gt;&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="250" y="210" width="490" height="360" as="geometry" />
+        </mxCell>
+        <mxCell id="FbjJ07lTMPpQPkqSLfpy-3" value="" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="FbjJ07lTMPpQPkqSLfpy-1" target="FbjJ07lTMPpQPkqSLfpy-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="FbjJ07lTMPpQPkqSLfpy-6" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="FbjJ07lTMPpQPkqSLfpy-1" target="FbjJ07lTMPpQPkqSLfpy-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="FbjJ07lTMPpQPkqSLfpy-8" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="FbjJ07lTMPpQPkqSLfpy-1" target="FbjJ07lTMPpQPkqSLfpy-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="FbjJ07lTMPpQPkqSLfpy-13" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="FbjJ07lTMPpQPkqSLfpy-1" target="FbjJ07lTMPpQPkqSLfpy-12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="FbjJ07lTMPpQPkqSLfpy-1" value="Usuário" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="120" y="360" width="30" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="FbjJ07lTMPpQPkqSLfpy-2" value="Autenticar no&lt;div&gt;sistema utilizando&amp;nbsp;&lt;/div&gt;&lt;div&gt;o QRCode&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="280" y="250" width="145" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="FbjJ07lTMPpQPkqSLfpy-5" value="Exportar dados&lt;div&gt;dos clientes&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="280" y="490" width="145" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="FbjJ07lTMPpQPkqSLfpy-10" value="" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="FbjJ07lTMPpQPkqSLfpy-12" target="FbjJ07lTMPpQPkqSLfpy-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="FbjJ07lTMPpQPkqSLfpy-11" value="&amp;lt;&amp;lt; include&amp;gt;&amp;gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];rotation=0;" vertex="1" connectable="0" parent="FbjJ07lTMPpQPkqSLfpy-10">
+          <mxGeometry x="0.35" y="1" relative="1" as="geometry">
+            <mxPoint x="-23" y="-9" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="FbjJ07lTMPpQPkqSLfpy-7" value="Acessar histórico&lt;div&gt;de alterações&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="280" y="410" width="145" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="FbjJ07lTMPpQPkqSLfpy-9" value="Inserir senha administrativa ao executar uma exclusão" style="ellipse;whiteSpace=wrap;html=1;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="570" y="330" width="145" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="FbjJ07lTMPpQPkqSLfpy-12" value="Manter informações&amp;nbsp;&lt;div&gt;dos clientes&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;verticalAlign=middle;align=center;" vertex="1" parent="1">
+          <mxGeometry x="280" y="330" width="145" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
