@@ -5,4 +5,4 @@ app/back-end/**/src/main/**/target/
 app/back-end/**/src/test/**/target/
 
 ### VS Code ###
-app/back-end/.vscode/
+.vscode/
