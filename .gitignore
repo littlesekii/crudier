@@ -1,8 +1,25 @@
+app/front-end/logs
+app/front-end/*.log
+app/front-end/npm-debug.log*
+app/front-end/yarn-debug.log*
+app/front-end/yarn-error.log*
+app/front-end/pnpm-debug.log*
+app/front-end/lerna-debug.log*
+
+app/front-end/node_modules
+app/front-end/.DS_Store
+app/front-end/dist
+app/front-end/dist-ssr
+app/front-end/coverage
+app/front-end/*.local
+
 app/back-end/HELP.md
 app/back-end/target/
 app/back-end/.mvn/wrapper/maven-wrapper.jar
 app/back-end/**/src/main/**/target/
 app/back-end/**/src/test/**/target/
+
+.local/
 
 ### VS Code ###
 .vscode/

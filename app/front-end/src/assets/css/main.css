@@ -1,0 +1,29 @@
+@import './base.css';
+
+.flex {
+  display: flex;
+}
+.f-column {
+  flex-direction: column;
+}
+.f-centered {
+  justify-content: center;
+  align-items: center;
+}
+
+.rounded-full {
+  border-radius: 100%;
+}
+
+.break-keep {
+  word-break: keep-all;
+}
+
+.tal-center {
+  text-align: center;
+}
+
+
+.ovfx-hidden {
+  overflow-x: hidden;
+}
