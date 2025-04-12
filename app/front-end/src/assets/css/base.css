@@ -9,10 +9,13 @@
 
   --black: #181818;
   --black-soft: #222222;
+  --black-softer: #555555;
 
   --gray: #a9a9ad;
 
   --blue-soft: #5e86f7;
+
+  --brand-color: #6a5d9a;
 }
 
 /* semantic color variables for this project */
