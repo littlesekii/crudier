@@ -1,5 +1,5 @@
 const http = {
-  baseUrl: "http://localhost:1001",
+  baseUrl: "",
   get: function (url) {
     console.log(this.baseUrl + url);
 
