@@ -7,31 +7,90 @@ const estados = ref([]);
 const cidades = ref([]);
 
 const selectEstados = useTemplateRef("sel-estados");
+const selectCidades = useTemplateRef("sel-cidades");
 
-onMounted(() => {
+function formatarCPF(e) {
+  const formatoCPF = e.target.value
+    .replace(/\D/g, "") // Impede qualquer coisa que não seja número
+    .replace(/(\d{3})(\d)/, "$1.$2") // Adiciona ponto após o terceiro dígito
+    .replace(/(\d{3})(\d)/, "$1.$2") // Adiciona ponto após o sexto dígito
+    .replace(/(\d{3})(\d)/, "$1-$2") // Adiciona traço após o nono dígito
+    .replace(/(-\d{2})\d+?$/, "$1"); // Impede entrada de mais de 11 dígitos
+  e.target.value = formatoCPF;
+}
 
-  http.get("https://servicodados.ibge.gov.br/api/v1/localidades/estados?orderBy=nome")
-    .then(res => res.json())
-    .then((data) => {
-      estados.value = data;
-    });
+function formatarTelefone(e) {
+  let formatoTelefone = e.target.value
+    .replace(/\D/g, "") // Impede qualquer coisa que não seja número
+    .replace(/(\d{2})(\d)/, "($1) $2") // Adiciona parênteses no DDD e separa o próximo dígito
+    .replace(/(\d{4})(\d)/, "$1-$2") // Adiciona o traço após o quarto dígito
+    .replace(/(-\d{5})\d+?$/, "$1"); // Impede entrada de mais de 11 dígitos
 
-  http.get("https://viacep.com.br/ws/25535014/json")
-    .then(res => res.json())
-    .then(data => console.log(data));
-});
+  // altera a posição do dash
+  if(formatoTelefone.length >= 15) {
+    const dashPos = formatoTelefone.match("-").index;
+    const auxArray = formatoTelefone.split("");
 
+    auxArray[dashPos] = auxArray[dashPos + 1];
+    auxArray[dashPos + 1] = "-";
 
-function carregarCidades() {
+    formatoTelefone = auxArray.join("");
+  }
+
+  e.target.value = formatoTelefone;
+}
+
+function formatarCEP(e) {
+  const formatoCEP = e.target.value
+    .replace(/\D/g, "") // Impede qualquer coisa que não seja número
+    .replace(/(\d{5})(\d)/, "$1-$2") // Adiciona traço após o quinto dígito
+    .replace(/(-\d{3})\d+?$/, "$1"); // Impede entrada de mais de 8 dígitos
+  e.target.value = formatoCEP;
+}
+
+function autoPreencherCidade(nomeCidade) {
+  const indiceCidade = cidades.value.findIndex(cidade => cidade.nome == nomeCidade);
+  selectCidades.value.value = indiceCidade;
+}
+
+function carregarCidades(autoCompletar = false, nomeCidade = "") {
   const idEstado = estados.value[selectEstados.value.value].id;
   http.get(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${idEstado}/municipios`)
     .then(res => res.json())
-    .then((data) => {
-      cidades.value = data;
+    .then((data) => cidades.value = data)
+    .finally(() => { 
+
+      if (!autoCompletar)
+        selectCidades.value.value = 0;
+      else
+        autoPreencherCidade(nomeCidade);
     });
 }
 
+function verificaAutoPreenchimentoCEP(e) {
+  const cep = e.target.value.replace("-", "");
 
+  if (cep.length >= 8) {
+    http.get(`https://viacep.com.br/ws/${cep}/json`)
+      .then(res => res.json())
+      .then(async data => {
+        if (!data.erro)
+        {
+          const indiceEstado = estados.value.findIndex(estado => estado.nome == data.estado);
+          selectEstados.value.value = indiceEstado;
+
+          carregarCidades(true, data.localidade);
+        }
+      });
+  }
+}
+
+onMounted(() => {
+  http.get("https://servicodados.ibge.gov.br/api/v1/localidades/estados?orderBy=nome")
+    .then(res => res.json())
+    .then((data) => estados.value = data)
+    .finally(() => carregarCidades());
+});
 
 </script>
 
@@ -47,14 +106,14 @@ function carregarCidades() {
 
         <div class="modal-form-input flex f-column">
           <label for="nome">Nome:</label>
-          <input type="text" id="nome" name="nome" placeholder="Fulano Silva" autocomplete="off" />
+          <input type="text" id="nome" name="nome" placeholder="Fulano Silva" required />
         </div>
 
         <div class="modal-form-inputs-wrapper-sp"></div>
 
         <div class="modal-form-input flex f-column">
           <label for="cpf">CPF:</label>
-          <input type="text" id="cpf" name="cpf" placeholder="123.456.789-11" autocomplete="off" />
+          <input @input="formatarCPF" type="text" id="cpf" name="cpf" placeholder="123.456.789-11" required />
         </div>
 
       </div>
@@ -63,14 +122,14 @@ function carregarCidades() {
         
         <div class="modal-form-input flex f-column">
           <label for="email">E-mail:</label>
-          <input type="text" id="email" name="email" placeholder="fulanosilva@gmail.com" autocomplete="off" />
+          <input type="email" id="email" name="email" placeholder="fulanosilva@gmail.com" />
         </div>
 
         <div class="modal-form-inputs-wrapper-sp"></div>
 
         <div class="modal-form-input flex f-column">
           <label for="telefone">Telefone:</label>
-          <input type="text" id="telefone" name="telefone" placeholder="(99) 98765-4321" autocomplete="off" />
+          <input @input="formatarTelefone" type="text" id="telefone" name="telefone" placeholder="(99) 98765-4321" />
         </div>
 
       </div>
@@ -79,7 +138,7 @@ function carregarCidades() {
 
         <div class="modal-form-input flex f-column">
           <label for="cep">CEP:</label>
-          <input type="text" id="cep" name="cep" placeholder="12345-000" autocomplete="off" />
+          <input @input="formatarCEP" @keyup="verificaAutoPreenchimentoCEP" type="text" id="cep" name="cep" placeholder="12345-000" required />
         </div>
 
         <div class="modal-form-inputs-wrapper-sp"></div>
@@ -87,7 +146,7 @@ function carregarCidades() {
         <div class="modal-form-input flex f-column">
           <label for="estado">Estado:</label>
           <select 
-            @change="carregarCidades" 
+            @change="carregarCidades()" 
             name="estado" 
             id="estado" 
             ref="sel-estados"
@@ -109,6 +168,7 @@ function carregarCidades() {
         <select 
           name="cidade" 
           id="cidade"
+          ref="sel-cidades"
         >
           <option 
             v-for="cidade, index in cidades" 
@@ -152,6 +212,7 @@ function carregarCidades() {
   font-size: 20pt;
   font-weight: bold;
   text-align: center;
+  line-height: 20pt;
 
   color: var(--black-soft);
 

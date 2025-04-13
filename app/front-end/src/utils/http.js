@@ -1,12 +1,12 @@
 const http = {
   baseUrl: "",
   get: function (url) {
-    console.log(this.baseUrl + url);
+    // console.log(this.baseUrl + url);
 
     return fetch(this.baseUrl + url);
   },
   post: function (url, body) {
-    console.log(this.baseUrl + url);
+    // console.log(this.baseUrl + url);
 
     return fetch(this.baseUrl + url, {
       method: "POST",
@@ -14,7 +14,7 @@ const http = {
     });
   },
   put: function (url, body) {
-    console.log(this.baseUrl + url);
+    // console.log(this.baseUrl + url);
 
     return fetch(this.baseUrl + url, {
       method: "PUT",
@@ -22,7 +22,7 @@ const http = {
     });
   },
   delete: function (url, body) {
-    console.log(this.baseUrl + url);
+    // console.log(this.baseUrl + url);
 
     return fetch(this.baseUrl + url, {
       method: "DELETE",
