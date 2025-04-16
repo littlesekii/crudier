@@ -1,9 +1,16 @@
 <script setup>
-import ModalCliente from "@/components/ModalCliente.vue";
-import { ref } from "vue";
+import ModalClienteComponent from "@/components/ModalCliente/ModalClienteComponent.vue";
+import NotificacaoTrayComponent from "@/components/Notificacao/NotificacaoTrayComponent.vue";
+import { ref, useTemplateRef } from "vue";
 
 const showCreateModal = ref(false);
 
+const notificationTray = useTemplateRef("notification-tray");
+
+function modalSaved(success, msg) {
+  showCreateModal.value = false;
+  notificationTray.value.notify(success, msg);
+}
 
 </script>
 
@@ -11,7 +18,13 @@ const showCreateModal = ref(false);
   <main class="flex f-column f-centered">
     <p>Hello, Crudier!</p>
     <button @click="showCreateModal = true">Abrir Modal</button>
-    <ModalCliente v-if="showCreateModal" @modalclose="showCreateModal = false" />  
+    
+    <ModalClienteComponent 
+    v-if="showCreateModal" 
+    @modalclose="showCreateModal = false"
+    @modalsave="modalSaved" 
+    />  
+    <NotificacaoTrayComponent ref="notification-tray"/>
   </main>
   
   
