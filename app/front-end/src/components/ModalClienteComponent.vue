@@ -1,26 +1,41 @@
 <script setup>
 import http from "@/utils/http";
-import ModalClienteBase from "./ModalClienteBase.vue";
-import { onMounted, ref, useTemplateRef } from "vue";
+import ModalClienteBase from "./ModalClienteBaseComponent.vue";
+import { onMounted, ref, /*useTemplateRef*/ } from "vue";
+
+const backendBaseURL = "http://localhost:1001";
 
 const estados = ref([]);
 const cidades = ref([]);
 
-const selectEstados = useTemplateRef("sel-estados");
-const selectCidades = useTemplateRef("sel-cidades");
+// const selectEstados = useTemplateRef("sel-estados");
+// const selectCidades = useTemplateRef("sel-cidades");
 
-function formatarCPF(e) {
-  const formatoCPF = e.target.value
+const emit = defineEmits(["modalsave"]);
+
+const formData = ref({
+  nome: "",
+  cpf: "",
+  email: "",
+  telefone: "",
+  cep: "",
+  estado: 0,
+  cidade: 0,
+  endereco: ""
+});
+
+function formatarCPF() {
+  const formatoCPF = formData.value.cpf
     .replace(/\D/g, "") // Impede qualquer coisa que não seja número
     .replace(/(\d{3})(\d)/, "$1.$2") // Adiciona ponto após o terceiro dígito
     .replace(/(\d{3})(\d)/, "$1.$2") // Adiciona ponto após o sexto dígito
     .replace(/(\d{3})(\d)/, "$1-$2") // Adiciona traço após o nono dígito
     .replace(/(-\d{2})\d+?$/, "$1"); // Impede entrada de mais de 11 dígitos
-  e.target.value = formatoCPF;
+  formData.value.cpf = formatoCPF;
 }
 
-function formatarTelefone(e) {
-  let formatoTelefone = e.target.value
+function formatarTelefone() {
+  let formatoTelefone = formData.value.telefone
     .replace(/\D/g, "") // Impede qualquer coisa que não seja número
     .replace(/(\d{2})(\d)/, "($1) $2") // Adiciona parênteses no DDD e separa o próximo dígito
     .replace(/(\d{4})(\d)/, "$1-$2") // Adiciona o traço após o quarto dígito
@@ -37,31 +52,31 @@ function formatarTelefone(e) {
     formatoTelefone = auxArray.join("");
   }
 
-  e.target.value = formatoTelefone;
+  formData.value.telefone = formatoTelefone;
 }
 
-function formatarCEP(e) {
-  const formatoCEP = e.target.value
+function formatarCEP() {
+  const formatoCEP = formData.value.cep
     .replace(/\D/g, "") // Impede qualquer coisa que não seja número
     .replace(/(\d{5})(\d)/, "$1-$2") // Adiciona traço após o quinto dígito
     .replace(/(-\d{3})\d+?$/, "$1"); // Impede entrada de mais de 8 dígitos
-  e.target.value = formatoCEP;
+  formData.value.cep = formatoCEP;
 }
 
 function autoPreencherCidade(nomeCidade) {
   const indiceCidade = cidades.value.findIndex(cidade => cidade.nome == nomeCidade);
-  selectCidades.value.value = indiceCidade;
+  formData.value.cidade = indiceCidade;
 }
 
 function carregarCidades(autoCompletar = false, nomeCidade = "") {
-  const idEstado = estados.value[selectEstados.value.value].id;
+  const idEstado = estados.value[formData.value.estado].id;
   http.get(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${idEstado}/municipios`)
     .then(res => res.json())
     .then((data) => cidades.value = data)
     .finally(() => { 
 
       if (!autoCompletar)
-        selectCidades.value.value = 0;
+        formData.value.cidade = 0;
       else
         autoPreencherCidade(nomeCidade);
     });
@@ -77,7 +92,7 @@ function verificaAutoPreenchimentoCEP(e) {
         if (!data.erro)
         {
           const indiceEstado = estados.value.findIndex(estado => estado.nome == data.estado);
-          selectEstados.value.value = indiceEstado;
+          formData.value.estado = indiceEstado;
 
           carregarCidades(true, data.localidade);
         }
@@ -85,18 +100,70 @@ function verificaAutoPreenchimentoCEP(e) {
   }
 }
 
+function removeMask(value) {
+  return value.replaceAll(".", "")
+    .replaceAll("-", "")
+    .replaceAll("(", "")
+    .replaceAll(")", "")
+    .replaceAll(" ", "");
+}
+
+function salvarCliente() {
+  const body = {
+    nome: formData.value.nome,
+    cpf: removeMask(formData.value.cpf),
+    email: formData.value.email,
+    telefone: removeMask(formData.value.telefone),
+    cep: removeMask(formData.value.cep),
+    estado: estados.value[formData.value.estado].nome,
+    cidade: cidades.value[formData.value.cidade].nome,
+    endereco: formData.value.endereco
+  };
+
+  http.post(`${backendBaseURL}/cliente`, JSON.stringify(body))
+    .then((res) => {
+      if (!res.ok) {
+        emit("modalsave", false, "Erro ao inserir o cliente!");
+        return;
+      }
+
+      emit("modalsave", true, "Cliente inserido com sucesso!");
+    });
+}
+
 onMounted(() => {
+
   http.get("https://servicodados.ibge.gov.br/api/v1/localidades/estados?orderBy=nome")
     .then(res => res.json())
     .then((data) => estados.value = data)
     .finally(() => carregarCidades());
+
+  const debugMode = true;
+
+  if (debugMode)
+  {
+    formData.value = {
+      cep: "23860000",
+      cidade: 39,
+      cpf: "06525442745",
+      email: "bacalhaudavi@gmail.com",
+      endereco: "Rua da Cachoeira Nº 17",
+      estado: 18,
+      nome: "Davi Bacalhau",
+      telefone: "21970242955"
+    };
+  }
+
+  formatarCEP();
+  formatarCPF();
+  formatarTelefone();
 });
 
 </script>
 
 <template>
  <ModalClienteBase>
-  <form class="modal-form flex f-column f-centered">
+  <form @submit.prevent="salvarCliente" class="modal-form flex f-column f-centered">
     <div class="modal-form-title">
       Novo Cliente
     </div>
@@ -106,14 +173,29 @@ onMounted(() => {
 
         <div class="modal-form-input flex f-column">
           <label for="nome">Nome:</label>
-          <input type="text" id="nome" name="nome" placeholder="Fulano Silva" required />
+          <input 
+            v-model="formData.nome" 
+            type="text" 
+            id="nome" 
+            name="nome" 
+            placeholder="Fulano Silva" 
+            required 
+          />
         </div>
 
         <div class="modal-form-inputs-wrapper-sp"></div>
 
         <div class="modal-form-input flex f-column">
           <label for="cpf">CPF:</label>
-          <input @input="formatarCPF" type="text" id="cpf" name="cpf" placeholder="123.456.789-11" required />
+          <input 
+            v-model="formData.cpf" 
+            @input="formatarCPF" 
+            type="text" 
+            id="cpf" 
+            name="cpf" 
+            placeholder="123.456.789-11" 
+            required 
+          />
         </div>
 
       </div>
@@ -122,14 +204,27 @@ onMounted(() => {
         
         <div class="modal-form-input flex f-column">
           <label for="email">E-mail:</label>
-          <input type="email" id="email" name="email" placeholder="fulanosilva@gmail.com" />
+          <input 
+            v-model="formData.email" 
+            type="email" 
+            id="email" 
+            name="email" 
+            placeholder="fulanosilva@gmail.com" 
+          />
         </div>
 
         <div class="modal-form-inputs-wrapper-sp"></div>
 
         <div class="modal-form-input flex f-column">
           <label for="telefone">Telefone:</label>
-          <input @input="formatarTelefone" type="text" id="telefone" name="telefone" placeholder="(99) 98765-4321" />
+          <input 
+            v-model="formData.telefone" 
+            @input="formatarTelefone" 
+            type="text" 
+            id="telefone" 
+            name="telefone" 
+            placeholder="(99) 98765-4321" 
+          />
         </div>
 
       </div>
@@ -138,7 +233,16 @@ onMounted(() => {
 
         <div class="modal-form-input flex f-column">
           <label for="cep">CEP:</label>
-          <input @input="formatarCEP" @keyup="verificaAutoPreenchimentoCEP" type="text" id="cep" name="cep" placeholder="12345-000" required />
+          <input 
+            v-model="formData.cep"
+            @input="formatarCEP" 
+            @keyup="verificaAutoPreenchimentoCEP" 
+            type="text" 
+            id="cep" 
+            name="cep" 
+            placeholder="12345-000" 
+            required 
+          />
         </div>
 
         <div class="modal-form-inputs-wrapper-sp"></div>
@@ -146,6 +250,7 @@ onMounted(() => {
         <div class="modal-form-input flex f-column">
           <label for="estado">Estado:</label>
           <select 
+            v-model="formData.estado"
             @change="carregarCidades()" 
             name="estado" 
             id="estado" 
@@ -166,6 +271,7 @@ onMounted(() => {
       <div class="modal-form-input flex f-column">
         <label for="cidade">Cidade:</label>
         <select 
+          v-model="formData.cidade"
           name="cidade" 
           id="cidade"
           ref="sel-cidades"
@@ -182,7 +288,14 @@ onMounted(() => {
 
       <div class="modal-form-input flex f-column">
         <label for="endereco">Endereço:</label>
-        <input type="text" id="endereco" name="endereco" placeholder="ex.: Rua das Flores N°55 " autocomplete="off" />
+        <input 
+          v-model="formData.endereco"
+          type="text" 
+          id="endereco" 
+          name="endereco" 
+          placeholder="ex.: Rua das Flores N°55 " 
+          autocomplete="off" 
+        />
       </div>
 
     </div>
@@ -278,6 +391,7 @@ onMounted(() => {
 
   color: var(--white);
   font-size: 12pt;
+  font-weight: 300;
 
   background-color: var(--brand-color);
 
