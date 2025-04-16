@@ -10,7 +10,10 @@ const http = {
 
     return fetch(this.baseUrl + url, {
       method: "POST",
-      body: body
+      body: body,
+      headers: {
+        "Content-type": "application/json; charset=UTF-8"
+      }
     });
   },
   put: function (url, body) {
@@ -18,7 +21,10 @@ const http = {
 
     return fetch(this.baseUrl + url, {
       method: "PUT",
-      body: body
+      body: body,
+      headers: {
+        "Content-type": "application/json; charset=UTF-8"
+      }
     });
   },
   delete: function (url, body) {
@@ -26,7 +32,10 @@ const http = {
 
     return fetch(this.baseUrl + url, {
       method: "DELETE",
-      body: body
+      body: body,
+      headers: {
+        "Content-type": "application/json; charset=UTF-8"
+      }
     });
   },
 };
