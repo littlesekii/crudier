@@ -1,4 +1,5 @@
 <script setup>
+import ListaClientesComponent from "@/components/ListaClientesComponent.vue";
 import ModalClienteComponent from "@/components/ModalCliente/ModalClienteComponent.vue";
 import NotificacaoTrayComponent from "@/components/Notificacao/NotificacaoTrayComponent.vue";
 import { ref, useTemplateRef } from "vue";
@@ -16,9 +17,11 @@ function modalSaved(success, msg) {
 
 <template>
   <main class="flex f-column f-centered">
-    <p>Hello, Crudier!</p>
-    <button @click="showCreateModal = true">Abrir Modal</button>
+    <!-- <p>Hello, Crudier!</p>
+    <button @click="showCreateModal = true">Abrir Modal</button> -->
     
+    <ListaClientesComponent />
+
     <ModalClienteComponent 
     v-if="showCreateModal" 
     @modalclose="showCreateModal = false"
